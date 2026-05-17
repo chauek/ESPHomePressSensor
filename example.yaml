@@ -1,0 +1,40 @@
+esphome:
+  name: pressure-sensor
+  friendly_name: Pressure Sensor
+
+esp32:
+  board: esp32-c6-devkitc-1
+  framework:
+    type: esp-idf
+
+external_components:
+  - source:
+      type: local
+      path: components
+    components: [dfrobot_257]
+
+logger:
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+sensor:
+  - platform: adc
+    id: pressure_adc
+    pin: GPIO3
+    attenuation: 2.5db
+    update_interval: never
+
+  - platform: dfrobot_257
+    source_id: pressure_adc
+    zero_voltage: 0.471
+    pa_per_volt: 250000
+    sample_count: 50
+    sample_interval: 10ms
+    outlier_threshold: 10
+    update_interval: 3s
+    pressure:
+      name: "Water Pressure"
+    voltage:
+      name: "Sensor Voltage"
